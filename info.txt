@@ -1,0 +1,95 @@
+Masses of the sliding weights: 152.75 g, 151.95 g.
+Width of the weight 3.0 cm.
+Period of the weighless oscillations with rod №1: 0.385 s
+
+Rod width is 3% less than the stated width.
+
+
+# rod 1, manual torsion constant measurement, arm = 15 cm
+Force (N), Angle (degrees)
+0.0, 1
+0.3, 10
+0.5, 17
+0.6, 19
+0.9, 30
+1.0, 34
+
+Period of rod 1 with masses 1.245 s.
+
+
+# rod 2, manual
+Force (N), Angle (degrees)
+0.0, 0
+0.3, 29
+0.5, 48
+0.8, 80
+1.0, 100
+
+Period of rod 2 with masses 2.181 s.
+
+
+# rod 3, manual
+Force (N), Angle (degrees)
+0.0, 0
+0.3, 23
+0.5, 40
+0.7, 58
+0.9, 79
+
+Period of rod 3 with masses 2.013 s.
+
+
+# rod 4, manual
+Force (N), Angle (degrees)
+0.0, 0
+0.3, 18
+0.6, 36
+0.9, 55
+1.0, 61
+
+Period of rod 4 with masses 1.712 s.
+
+
+# rod 5, manual
+Force (N), Angle (degrees)
+0.0, 0
+0.3, 6
+0.6, 12
+0.9, 19
+1.0, 21
+
+Period of rod 5 with masses 0.986 s.
+
+
+# rod 6, manual
+Force (N), Angle (degrees)
+0.0, 0
+1.0, 6
+1.4, 9
+1.6, 10
+2.0, 13
+
+Period of rod 6 with masses 0.563 s.
+
+
+# rod 7, manual
+Force (N), Angle (degrees)
+0.0, 0
+0.2, 14
+0.4, 30
+0.6, 44
+0.8, 63
+
+Period of rod 7 with masses 1.976 s.
+
+
+# rod 8, manual
+Force (N), Angle (degrees)
+0.0, 0
+0.2, 10
+0.4, 21
+0.6, 34
+0.8, 48
+
+
+Period of rod 8 with masses 1.670 s.

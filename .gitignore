@@ -1,0 +1,10 @@
+# TeX-generated auxilary files
+*.out
+*.snm
+*.nav
+*.aux
+*.log
+*.synctex.gz
+
+# Vim's backup files
+*.swp

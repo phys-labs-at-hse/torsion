@@ -5,6 +5,8 @@
 *.aux
 *.log
 *.synctex.gz
+*.fls
+*.fdb_latexmk
 
 # Vim's backup files
 *.swp

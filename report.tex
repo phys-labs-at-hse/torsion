@@ -1,0 +1,83 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage[no-math]{fontspec-xetex}
+\setmainfont{IBM Plex Sans}
+\usepackage[english, russian]{babel}
+
+\usepackage{blindtext}
+\usepackage{microtype}
+\usepackage{geometry}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm, mathtools}
+\usepackage{MnSymbol}
+\usepackage{physics}
+
+\usepackage{graphicx, wrapfig, caption, subcaption}
+\usepackage{color, xcolor}
+
+\usepackage{titlesec}
+\usepackage[document]{ragged2e}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{import}
+
+\graphicspath{{figures/}}
+\geometry{margin=6em}
+\geometry{bottom=6em}
+
+% Настройки заголовков
+\titleformat{\section}[hang]{\Large}{}{0em}{}{}
+\titleformat{\subsection}[hang]{\large}{}{0em}{}{}
+
+% Это предотвратит разрыв слов
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% Настройки параграфов текста
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+\renewcommand{\baselinestretch}{1.1}
+
+% Настройки списков
+\setlist{leftmargin=*, noitemsep}
+
+% Настройки таблиц
+\setlength{\tabcolsep}{2em}
+\renewcommand{\arraystretch}{1.3}
+
+% Настройки ссылок
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\title{Модуль сдвига и крутильные колебания}
+\author{Роман Ухоботов, Николай Грузинов}
+\date{}%собрано \today}
+
+\begin{document}
+\maketitle
+
+\section{Используемое оборудование}
+\begin{enumerate}
+\item динамометр (max $1$~Н, цена деления $0.1$~Н);
+\item 8 стержней разных длин, масс, диаметров и материалов;
+\item крутящаяся платформа с встроенным транспортиром;
+\item 2 груза для изменения момента инерции платформы;
+\item оптические ворота (для измерения периода, погрешность: $0.01$~c);
+\end{enumerate}
+
+\section{Цели и задачи}
+Цель: изучить крутильные колебания различных стержней, измеряя период колебаний и крутильный коэффициент жесткости.
+Задачи:
+\begin{enumerate}
+\item измерить момент инерции крутящейся платформы без грузов
+\item для каждого из восьми стержней измерить динамометром крутильный коэффициент жесткости в статике.
+\item для каждого стержня измерить период колебаний оптическими воротами
+\item среди стержней есть 3 стержня из одного материала и одного диаметра, но разной длины --- посмотреть на зависимость периода колебаний и крутильного коэффициента жесткости от длины;
+\item есть два стержня из одного материала и одинаковой длины, но разных диаметров --- посмотреть на зависимость от диаметра;
+\item вычислить модуль сдвига (или модуль Юнга) стали, алюминия, меди и латуни; сравнить c табличными значениями. 
+\end{enumerate}
+
+\section{Теоретическая модель}
+\section{Методика измерений}
+\section{Результаты}
+\section{Выводы}
+\end{document}

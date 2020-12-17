@@ -50,10 +50,13 @@ for i in range(1, 9):
     plt.errorbar(angles, torques, xerr=1, yerr=torques_err, fmt='o')
 
     # Write LaTeX tabulars from the current force-angle-csv
-    table = list(zip(forces, angles))
-    table.insert(0, ['Сила, Н', r'Угол, $^\circ$'])
     with open(f'latex-tabulars/{i}.tex', 'w') as tex_file:
-        tex_file.write(tabulate.tabulate(table, tablefmt='latex_raw'))
+        tex_file.write('\\begin{tabular}{|c|c|}\n')
+        tex_file.write('\\hline\n')
+        tex_file.write('Сила, Н & Угол, $^\circ$ \\\\ \\hline\n')
+        for force, angle in zip(forces, angles):
+            tex_file.write(f'{force:.2f} & {angle:.0f} \\\\ \\hline\n')
+        tex_file.write('\\end{tabular}\n')
 
 plt.grid()
 plt.xlabel('Угол, °', fontsize = 18)

@@ -19,44 +19,49 @@ periods = [1.245, 2.181, 2.013, 1.712, 0.986, 0.563, 1.976, 1.670]
 # Force * arm = tors_coef * angle
 tors_coefs = []
 tors_coefs_err = []  # list of uncertainties
+arm = 0.15  # 15 cm is the distance from the axis
 
-with open('info.txt') as file:
-    csv_started = False
-    arm = 0.15  # 15 cm is the distance from the axis
+# Loop through 8 csvs in force-angle-csvs
+for i in range(1, 9):
+    file = open(f'force-angle-csvs/{i}.csv')
+    next(file)  # skip the column names
+
     forces = []
     angles = []
-
     for line in file:
-        line = line.strip()
+        force, angle = map(float, line.strip().split(', '))
+        forces.append(force)
+        angles.append(angle)
 
-        if line.startswith('Force (N), Angle (degrees)'):
-            csv_started = True
-            continue
+    torques = []
+    torques_err = []
+    # Arm error is around 3 mm, and force error is 0.02 N
+    for force in forces:
+        torques.append(arm * force)
+        if force == 0:
+            torques_err.append(0)
+        else:
+            torques_err.append(force * 3e-3 + 0.02 * arm)
 
-        if not line and csv_started:
-            csv_started = False  # csv ended
+    tors_coefs.append(stats.linregress(angles, torques).slope)
+    tors_coefs_err.append(get_slope_error(angles, torques))
 
-            torques = list(map(lambda force: force * arm, forces))
+    # Verify linearity visually on a plot.
+    plt.errorbar(angles, torques, xerr=1, yerr=torques_err, fmt='o')
 
-            tors_coefs.append(stats.linregress(angles, torques).slope)
-            tors_coefs_err.append(get_slope_error(angles, torques))
+    # Write LaTeX tabulars from the current force-angle-csv
+    table = list(zip(forces, angles))
+    table.insert(0, ['Сила, Н', r'Угол, $^\circ$'])
+    with open(f'latex-tabulars/{i}.tex', 'w') as tex_file:
+        tex_file.write(tabulate.tabulate(table, tablefmt='latex_raw'))
 
-            # Verify linearity visually. Errorsbars are my rough estimate.
-            yerr = list(map(lambda torque: torque * 0.05, torques))
-            plt.errorbar(angles, torques, xerr = 1, yerr = yerr, fmt = 'o')
-
-            forces = []
-            angles = []
-            continue
-
-        if csv_started:
-            force, angle = map(float, line.strip().split(', '))
-            forces.append(force)
-            angles.append(angle)
+plt.grid()
+plt.xlabel('Угол, °', fontsize = 18)
+plt.ylabel('Момент силы, Н·м', fontsize = 18)
+# plt.savefig('figures/torque-angle-plot.pdf')
 
 # Print tors_coefs along with absolute errors
-print(tors_coefs)
 for coef, err in zip(tors_coefs, tors_coefs_err):
-    print(f'{err / coef:.1e}', end=' ')
-
+    print(f'{coef:.3e}, {round(err / coef * 100)}%')
+print()
 # All plots are indeed linear, and the slope errors are acceptable.

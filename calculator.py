@@ -1,7 +1,6 @@
 import math
 from scipy import stats
 import matplotlib.pyplot as plt
-import tabulate
 
 
 def get_slope_error(x, y, students_t=2):
@@ -47,7 +46,7 @@ for i in range(1, 9):
     tors_coefs_err.append(get_slope_error(angles, torques))
 
     # Verify linearity visually on a plot.
-    plt.errorbar(angles, torques, xerr=1, yerr=torques_err, fmt='o')
+    plt.errorbar(angles, torques, xerr=1, yerr=torques_err, fmt='o', label = i)
 
     # Write LaTeX tabulars from the current force-angle-csv
     with open(f'latex-tabulars/{i}.tex', 'w') as tex_file:
@@ -59,6 +58,7 @@ for i in range(1, 9):
         tex_file.write('\\end{tabular}\n')
 
 plt.grid()
+plt.legend()
 plt.xlabel('Угол, °', fontsize = 18)
 plt.ylabel('Момент силы, Н·м', fontsize = 18)
 # plt.savefig('figures/torque-angle-plot.pdf')
@@ -68,3 +68,11 @@ for coef, err in zip(tors_coefs, tors_coefs_err):
     print(f'{coef:.3e}, {round(err / coef * 100)}%')
 print()
 # All plots are indeed linear, and the slope errors are acceptable.
+
+diameters = [2, 2, 2, 3, 4, 2, 2] # in mm, so divide by 1000 to convert to SI
+diameters = list(map(lambda diameter: diameter / 1000, diameters))
+
+lengths = [0.5, 0.5, 0.4, 0.3, 0.5, 0.5, 0.5, 0.5]
+
+def get_shear_modulus(tors_coef, diameter, length):
+    return 32 * tors_coef * l / (math.pi * diameter ** 4)

@@ -1,6 +1,9 @@
-import math
+import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
+import uncertainties as unc
+from uncertainties import unumpy as unp
+from labtables import Table
 
 
 def get_slope_error(x, y, students_t=2):
@@ -10,69 +13,63 @@ def get_slope_error(x, y, students_t=2):
     D_y = stats.tstd(y) ** 2
     D_x = stats.tstd(x) ** 2
     # Formula from the MIPT lab manual
-    return students_t * math.sqrt(1/(len(x) - 2) * (D_y / D_x - slope ** 2))
+    return students_t * np.sqrt(1/(len(x) - 2) * (D_y / D_x - slope ** 2))
+
+
+def get_shear_modulus(tors_coef, diameter, length):
+    return 32 * tors_coef * length / (np.pi * diameter ** 4)
 
 
 periods = [1.245, 2.181, 2.013, 1.712, 0.986, 0.563, 1.976, 1.670]
+diameters = [2, 2, 2, 2, 3, 4, 2, 2]
+# Diameters are in mm, so divide by 1000 to convert to SI
+diameters = list(map(lambda diameter: diameter / 1000, diameters))
+lengths = [0.5, 0.5, 0.4, 0.3, 0.5, 0.5, 0.5, 0.5]
+actual_shmods = [83, 25, 25, 25, 25, 25, 37, 46]  # in GPa
 
-# Force * arm = tors_coef * angle
+
+# Add reasonable errors: 0.01 s for perios and 1% for d and l.
+periods = list(map(lambda x: unc.ufloat(x, 0.01), periods))
+diameters = list(map(lambda x: unc.ufloat(x, x * 0.01), diameters))
+lengths = list(map(lambda x: unc.ufloat(x, x * 0.01), lengths))
+
+
+# Force * arm = tors_coef * angle.
 tors_coefs = []
-tors_coefs_err = []  # list of uncertainties
-arm = 0.15  # 15 cm is the distance from the axis
+# 15.0 ± 0.3 cm is the distance from the axis.
+arm = unc.ufloat(0.15, 0.003)
 
 # Loop through 8 csvs in force-angle-csvs
 for i in range(1, 9):
-    file = open(f'force-angle-csvs/{i}.csv')
-    next(file)  # skip the column names
-
-    forces = []
-    angles = []
-    for line in file:
-        force, angle = map(float, line.strip().split(', '))
-        forces.append(force)
-        angles.append(angle)
+    forces, angles = Table.read_csv(f'force-angle-csvs/{i}.csv')
+    # Add some reasonable error, 0.02 N.
+    forces = list(map(lambda x: unc.ufloat(x, 0.02), forces))
+    # Convert angles to radians
+    angles = list(map(lambda angle: angle * np.pi / 180, angles))
 
     torques = []
-    torques_err = []
-    # Arm error is around 3 mm, and force error is 0.02 N
     for force in forces:
-        torques.append(arm * force)
-        if force == 0:
-            torques_err.append(0)
-        else:
-            torques_err.append(force * 3e-3 + 0.02 * arm)
+        torques.append(unc.nominal_value(arm * force))
 
-    tors_coefs.append(stats.linregress(angles, torques).slope)
-    tors_coefs_err.append(get_slope_error(angles, torques))
+    tors_coefs.append(
+        unc.ufloat(
+            stats.linregress(angles, torques).slope,
+            get_slope_error(angles, torques)
+        )
+    )
 
-    # Verify linearity visually on a plot.
-    plt.errorbar(angles, torques, xerr=1, yerr=torques_err, fmt='o', label = i)
+# Print tors_coefs along with absolute errors.
+print('tors_coefs:', *tors_coefs, sep='\n')
 
-    # Write LaTeX tabulars from the current force-angle-csv
-    with open(f'latex-tabulars/{i}.tex', 'w') as tex_file:
-        tex_file.write('\\begin{tabular}{|c|c|}\n')
-        tex_file.write('\\hline\n')
-        tex_file.write('Сила, Н & Угол, $^\circ$ \\\\ \\hline\n')
-        for force, angle in zip(forces, angles):
-            tex_file.write(f'{force:.2f} & {angle:.0f} \\\\ \\hline\n')
-        tex_file.write('\\end{tabular}\n')
+shmods = list(map(lambda args: get_shear_modulus(*args),
+                  zip(tors_coefs, diameters, lengths)))
+print('shmods:', *(np.array(shmods) / 1e9), sep='\n')
 
-plt.grid()
-plt.legend()
-plt.xlabel('Угол, °', fontsize = 18)
-plt.ylabel('Момент силы, Н·м', fontsize = 18)
-# plt.savefig('figures/torque-angle-plot.pdf')
 
-# Print tors_coefs along with absolute errors
-for coef, err in zip(tors_coefs, tors_coefs_err):
-    print(f'{coef:.3e}, {round(err / coef * 100)}%')
-print()
-# All plots are indeed linear, and the slope errors are acceptable.
-
-diameters = [2, 2, 2, 3, 4, 2, 2] # in mm, so divide by 1000 to convert to SI
-diameters = list(map(lambda diameter: diameter / 1000, diameters))
-
-lengths = [0.5, 0.5, 0.4, 0.3, 0.5, 0.5, 0.5, 0.5]
-
-def get_shear_modulus(tors_coef, diameter, length):
-    return 32 * tors_coef * l / (math.pi * diameter ** 4)
+colnames = (
+    '$k$, Н·м',  # tors_coefs
+    '$G$, ГПа',  # shmods
+    '$G$ из таблицы, ГПа',  # actual_shmods
+    'Период колебаний, с',  # periods
+    '$k$ по периодам, с',  # tors_coef_alt
+)

@@ -8,5 +8,5 @@
 *.fls
 *.fdb_latexmk
 
-# Vim's backup files
-*.swp
+# Python-generated auxilary files
+__pycache__/

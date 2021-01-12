@@ -118,3 +118,9 @@ I0_ = (T ** 2 * k) / (4 * np.pi ** 2)
 print(f'I0_ = {I0_ * 1000} g * m^2')
 print(f'I0 difference: {I0 - I0_}, which is {(I0 - I0_) / I0} of I0')
 print(f'I0 relative error: {I0.std_dev / I0.nominal_value} g * m^2')
+
+# Check simple relations with tors_coefs
+print((tors_coefs[1] / tors_coefs[2] - 4 / 5) / (4 / 5))
+print((tors_coefs[1] / tors_coefs[3] - 3 / 5) / (3 / 5))
+print((tors_coefs[1] / tors_coefs[4] - (2 / 3)**4) / (2 / 3) ** 4)
+print((tors_coefs[1] / tors_coefs[5] - (1 / 2)**4) / (1 / 2) ** 4)

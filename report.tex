@@ -104,12 +104,12 @@ I = I_0 + 2 \frac{m}{b} \int\limits_{a - \frac{b}{2}}^{a + \frac{b}{2}} r^2 \dd 
 Расстояние от оси до центра груза $a = 15 \pm 0.3$~см.
 Диаметры стержней отличаются от паспортных значений меньше, чем на 2\%, поэтому мы будем пользоваться паспортными значениями.
 
-\begin{table}[!htbp]
-\label{tab:force-angle}
+\begin{table}[h]
 \caption{
     Измерения динамометром для стержней 1-8, слева направо, снизу вверх.
     Плечо, за которое тянули --- $a$.
 }
+\label{tab:force-angle}
 \input{latex-tabulars/1.tex}
 \input{latex-tabulars/2.tex}
 \input{latex-tabulars/3.tex}
@@ -120,30 +120,30 @@ I = I_0 + 2 \frac{m}{b} \int\limits_{a - \frac{b}{2}}^{a + \frac{b}{2}} r^2 \dd 
 \input{latex-tabulars/8.tex}
 \end{table}
 
-\begin{figure}[h]
-\label{fig:torque-angle-plot}
+\begin{figure}[h!]
 \caption{
     Измерения динамометром. Видно, что зависимости линейные.
     По углу наклона считался коэффициент $k$ для каждого стержня.
 }
+\label{fig:torque-angle-plot}
 \begin{center}
 \includegraphics[width=1\linewidth]{torque-angle-plot.pdf}
 \end{center}
 \end{figure}
 
 \begin{table}[!htbp]
-\label{tab:main}
 \caption{
     Период колебаний, крутильный коэффициент жесткости,
     модуль сдвига и его справочное значение для каждого стержня.
     Справочные значения взяты из ``Справочника по элементарной физике''
     Кошкина и Ширкевича, Наука, 1975, стр.51.
 }
+\label{tab:main}
 \input{latex-tabulars/main_table.tex}
 % wontfixTODO: should I calculate $\Delta k$ without least squares? Do these values seem unreasonable?
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \caption{Зависимость $T^2 \propto 1/k$ очень хорошо работает.}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{periods_vs_tors_coefs_plot.pdf}
@@ -151,6 +151,7 @@ I = I_0 + 2 \frac{m}{b} \int\limits_{a - \frac{b}{2}}^{a + \frac{b}{2}} r^2 \dd 
 \label{fig:tk}
 \end{figure}
 
+\clearpage
 Из графика \ref{fig:tk} можно вытащить коэффициент наклона:
 \[
 4 \pi^2 \left(I_0 + 2m \left( a^2 + \frac{b^2}{12} \right)\right) = 0.409 \pm 0.005 \text{ кг$\cdot$м$^2$}
@@ -159,10 +160,12 @@ I = I_0 + 2 \frac{m}{b} \int\limits_{a - \frac{b}{2}}^{a + \frac{b}{2}} r^2 \dd 
 Мы также измерили период колебаний платформы без грузов с первым стержнем, откуда тоже можно выразить $I_0$:
 \[ I_0 = \frac{T^2 k}{4 \pi^2} = (T^2 k)/(4 \pi^2) = 3.9 \pm 0.3 \text{ г$\cdot$м$^2$} .\]
 
-% TODO: get the line's slope, calculate $I_0$ from it; compare to
-% Period of the weighless oscillations with rod №1: 0.385 s
-
-%\section{Выводы}
-% TODO: сравнение отдельных измерений: в два раза больше диаметр: в ? раз меньше период
-% TODO: вывод: всё сошлось
+\section{Выводы}
+Сошлось:
+\begin{itemize}
+\item график \ref{fig:tk} --- прямая пропорциональность  $T^2 \propto 1/k$;
+\item значения $G$ в пределах погрешности (которая получилась большой) хорошо совпали со справочными;
+\item по таблице \ref{tab:main} и списку алюминиевых стержней можно заметить, что формула $k \propto l/d^4$ c хорошей точностью выполняется;
+\item значения $I_0$, посчитанные двумя способами, в пределах погрешности совпали.
+\end{itemize}
 \end{document}

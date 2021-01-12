@@ -63,11 +63,8 @@ for i in range(1, 9):
     for force in forces:
         torques.append(unc.nominal_value(arm * force))
 
-    tors_coefs.append(
-        unc.ufloat(
-            stats.linregress(angles, torques).slope,
-            get_slope_error(angles, torques)
-        )
+    tors_coefs.append(unc.ufloat(stats.linregress(angles, torques).slope,
+                                 get_slope_error(angles, torques))
     )
 
 # Print tors_coefs along with absolute errors.
@@ -78,11 +75,13 @@ shmods = list(map(lambda args: get_shear_modulus(*args) / 1e9,
 print('shmods:', *shmods, sep='\n')
 
 # Plot to check the relation periods**2 ~ 1/tors_coefs
-uscatter(np.array(periods) ** 2, 1 / np.array(tors_coefs), add_line=True)
+uscatter(np.array(periods) ** 2, 1 / np.array(tors_coefs),
+         add_line=True)
 plt.xlabel('$1/k$, 1/(Н·м)', fontsize=14)
 plt.ylabel('Период в квадрате, $с^2$', fontsize=14)
 plt.grid()
-plt.savefig('figures/periods_vs_tors_coefs_plot.pdf', bbox_inches='tight')
+plt.savefig('figures/periods_vs_tors_coefs_plot.pdf',
+            bbox_inches='tight')
 
 # Write the final table
 colnames = (

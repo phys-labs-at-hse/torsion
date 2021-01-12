@@ -20,6 +20,20 @@ def get_shear_modulus(tors_coef, diameter, length):
     return 32 * tors_coef * length / (np.pi * diameter ** 4)
 
 
+def uscatter(x, y, add_line=False):
+    """Scatter-plot arrays of uncertainties.ufloats, adding errorbars"""
+    x_nom = unp.nominal_values(x)
+    y_nom = unp.nominal_values(y)
+    x_std = unp.std_devs(x)
+    y_std = unp.std_devs(y)
+
+    plt.errorbar(x_nom, y_nom, xerr=x_std, yerr=y_std, fmt='o')
+    if add_line:
+        slope, intercept = np.polyfit(x_nom, y_nom, 1)
+        print(f'Plotting line with slope = {slope}, intercept = {intercept}')
+        plt.plot(x_nom, slope * x_nom + intercept)
+
+
 periods = [1.245, 2.181, 2.013, 1.712, 0.986, 0.563, 1.976, 1.670]
 diameters = [2, 2, 2, 2, 3, 4, 2, 2]
 # Diameters are in mm, so divide by 1000 to convert to SI
@@ -27,12 +41,10 @@ diameters = list(map(lambda diameter: diameter / 1000, diameters))
 lengths = [0.5, 0.5, 0.4, 0.3, 0.5, 0.5, 0.5, 0.5]
 actual_shmods = [83, 25, 25, 25, 25, 25, 37, 46]  # in GPa
 
-
 # Add reasonable errors: 0.01 s for perios and 1% for d and l.
 periods = list(map(lambda x: unc.ufloat(x, 0.01), periods))
-diameters = list(map(lambda x: unc.ufloat(x, x * 0.01), diameters))
-lengths = list(map(lambda x: unc.ufloat(x, x * 0.01), lengths))
-
+diameters = list(map(lambda x: unc.ufloat(x, x * 0.02), diameters))
+lengths = list(map(lambda x: unc.ufloat(x, x * 0.005), lengths))
 
 # Force * arm = tors_coef * angle.
 tors_coefs = []
@@ -61,15 +73,30 @@ for i in range(1, 9):
 # Print tors_coefs along with absolute errors.
 print('tors_coefs:', *tors_coefs, sep='\n')
 
-shmods = list(map(lambda args: get_shear_modulus(*args),
-                  zip(tors_coefs, diameters, lengths)))
-print('shmods:', *(np.array(shmods) / 1e9), sep='\n')
+shmods = list(map(lambda args: get_shear_modulus(*args) / 1e9,
+                  zip(tors_coefs, diameters, lengths)))  # in GPa
+print('shmods:', *shmods, sep='\n')
 
+# Plot to check the relation periods**2 ~ 1/tors_coefs
+uscatter(np.array(periods) ** 2, 1 / np.array(tors_coefs), add_line=True)
+plt.xlabel('$1/k$, 1/(Н·м)', fontsize=14)
+plt.ylabel('Период в квадрате, $с^2$', fontsize=14)
+plt.grid()
+plt.savefig('figures/periods_vs_tors_coefs_plot.pdf', bbox_inches='tight')
 
+# Write the final table
 colnames = (
-    '$k$, Н·м',  # tors_coefs
-    '$G$, ГПа',  # shmods
-    '$G$ из таблицы, ГПа',  # actual_shmods
-    'Период колебаний, с',  # periods
-    '$k$ по периодам, с',  # tors_coef_alt
+    '$T$, с',  # periods
+    '$k$, Н·м',             # tors_coefs
+    '$G$, ГПа',             # shmods
+    '$G$ спр., ГПа',  # actual_shmods
 )
+# Convert unc.ufloats to well-formatted strings
+table = Table(
+    unp.nominal_values(periods),
+    list(map(lambda x: f'{x:P}', tors_coefs)),
+    list(map(lambda x: f'{x:P}', shmods)),
+    actual_shmods,
+    colnames=colnames
+)
+Table.write_latex(table, 'main_table.tex', show_row_numbers=True)

@@ -133,21 +133,36 @@ I = I_0 + 2 \frac{m}{b} \int\limits_{a - \frac{b}{2}}^{a + \frac{b}{2}} r^2 \dd 
 
 \begin{table}[!htbp]
 \label{tab:main}
-\caption{Период колебаний, крутильный коэффициент жесткости, модуль сдвига и его справочное значение для каждого стержня.}
+\caption{
+    Период колебаний, крутильный коэффициент жесткости,
+    модуль сдвига и его справочное значение для каждого стержня.
+    Справочные значения взяты из ``Справочника по элементарной физике''
+    Кошкина и Ширкевича, Наука, 1975, стр.51.
+}
 \input{latex-tabulars/main_table.tex}
+% wontfixTODO: should I calculate $\Delta k$ without least squares? Do these values seem unreasonable?
 \end{table}
 
 \begin{figure}[h]
 \caption{Зависимость $T^2 \propto 1/k$ очень хорошо работает.}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{periods_vs_tors_coefs_plot.pdf}
-% TODO: the plot should pass through zero
 \end{center}
+\label{fig:tk}
 \end{figure}
+
+Из графика \ref{fig:tk} можно вытащить коэффициент наклона:
+\[
+4 \pi^2 \left(I_0 + 2m \left( a^2 + \frac{b^2}{12} \right)\right) = 0.409 \pm 0.005 \text{ кг$\cdot$м$^2$}
+.\]
+Отсюда $I_0 = 3.5 \pm 0.3$~г$\cdot$м$^2$.
+Мы также измерили период колебаний платформы без грузов с первым стержнем, откуда тоже можно выразить $I_0$:
+\[ I_0 = \frac{T^2 k}{4 \pi^2} = (T^2 k)/(4 \pi^2) = 3.9 \pm 0.3 \text{ г$\cdot$м$^2$} .\]
 
 % TODO: get the line's slope, calculate $I_0$ from it; compare to
 % Period of the weighless oscillations with rod №1: 0.385 s
 
 %\section{Выводы}
 % TODO: сравнение отдельных измерений: в два раза больше диаметр: в ? раз меньше период
+% TODO: вывод: всё сошлось
 \end{document}

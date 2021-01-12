@@ -39,7 +39,7 @@ diameters = [2, 2, 2, 2, 3, 4, 2, 2]
 # Diameters are in mm, so divide by 1000 to convert to SI
 diameters = list(map(lambda diameter: diameter / 1000, diameters))
 lengths = [0.5, 0.5, 0.4, 0.3, 0.5, 0.5, 0.5, 0.5]
-actual_shmods = [83, 25, 25, 25, 25, 25, 37, 46]  # in GPa
+actual_shmods = [80, 25, 25, 25, 25, 25, 36, 48]  # in GPa
 
 # Add reasonable errors: 0.01 s for perios and 1% for d and l.
 periods = list(map(lambda x: unc.ufloat(x, 0.01), periods))
@@ -75,11 +75,13 @@ shmods = list(map(lambda args: get_shear_modulus(*args) / 1e9,
 print('shmods:', *shmods, sep='\n')
 
 # Plot to check the relation periods**2 ~ 1/tors_coefs
-uscatter(np.array(periods) ** 2, 1 / np.array(tors_coefs),
+uscatter(1 / np.array(tors_coefs), np.array(periods) ** 2,
          add_line=True)
 plt.xlabel('$1/k$, 1/(Н·м)', fontsize=14)
 plt.ylabel('Период в квадрате, $с^2$', fontsize=14)
 plt.grid()
+plt.xlim(left=0)
+plt.ylim(bottom=0)
 plt.savefig('figures/periods_vs_tors_coefs_plot.pdf',
             bbox_inches='tight')
 
@@ -100,3 +102,19 @@ table = Table(
 )
 Table.write_latex(table, 'latex-tabulars/main_table.tex',
                   show_row_numbers=True)
+
+# Calculate I0: the moment of inertia of the platform without weights.
+slp = unc.ufloat(0.409, 0.409 * 0.01)  # from periods_vs_tors_coefs_plot.pdf
+m2 = unc.ufloat(304.7, 0.02) / 1000    # from info.txt
+a = unc.ufloat(15, 0.3) / 100
+b = unc.ufloat(3, 0.1) / 100
+I0 = slp / (4 * np.pi ** 2) - m2 * (a ** 2 + b ** 2 / 12)
+print(f'I0 = {I0 * 1000} g * m^2')
+
+# Calculate I0 from the 'period of weightless oscillations', info.txt
+T = unc.ufloat(0.385, 0.01) * 2
+k = unc.ufloat(0.261, 0.014)
+I0_ = (T ** 2 * k) / (4 * np.pi ** 2)
+print(f'I0_ = {I0_ * 1000} g * m^2')
+print(f'I0 difference: {I0 - I0_}, which is {(I0 - I0_) / I0} of I0')
+print(f'I0 relative error: {I0.std_dev / I0.nominal_value} g * m^2')

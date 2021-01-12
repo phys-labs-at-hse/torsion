@@ -1,6 +1,7 @@
 Masses of the sliding weights: 152.75 g, 151.95 g.
 Width of the weight 3.0 cm.
 Period of the weighless oscillations with rod №1: 0.385 s
+UPD: Assuming 0.385 s is actually half of the period for the results to make sense
 
 Rod width is 3% less than the stated width.
 

@@ -99,4 +99,5 @@ table = Table(
     actual_shmods,
     colnames=colnames
 )
-Table.write_latex(table, 'main_table.tex', show_row_numbers=True)
+Table.write_latex(table, 'latex-tabulars/main_table.tex',
+                  show_row_numbers=True)
